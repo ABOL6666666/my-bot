@@ -35,18 +35,19 @@ def save_database(db_data):
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump(db_data, f, indent=2, ensure_ascii=False)
 
-def push_to_sub_repo(runner_ip):
+def push_to_sub_repo(ngrok_domain):
     token = os.getenv("SUB_REPO_TOKEN")
     if not token:
         print("❌ SUB_REPO_TOKEN (GH_PAT2) not found!")
         return
 
-    vless_config = f"vless://d3b07384-d113-4956-a5cc-9c32267e1a3b@{runner_ip}:8085?path=%2Fkillpv2&security=none&encryption=none&type=ws#killpv2_Xray"
-    hy2_config = f"hysteria2://killpv2_secret_pass@{runner_ip}:8086?insecure=1&sni=bing.com&alpn=h3#killpv2_SingBox"
+    # ساخت کانفیگ‌ها بر پایه دامین اختصاصی Ngrok شما به همراه پورت‌های تانل شده
+    vless_config = f"vless://d3b07384-d113-4956-a5cc-9c32267e1a3b@{ngrok_domain}:443?path=%2Fkillpv2&security=tls&sni={ngrok_domain}&encryption=none&type=ws#killpv2_Xray_Ngrok"
+    hy2_config = f"hysteria2://killpv2_secret_pass@{ngrok_domain}:443?insecure=1&sni={ngrok_domain}&alpn=h3#killpv2_SingBox_Ngrok"
     sub_content = f"{vless_config}\n{hy2_config}"
 
     # ⚠️ نام کاربری اکانت دوم گیت‌هابت رو به جای عبارت زیر بنویس
-    repo_owner = "ABOL6666666" 
+    repo_owner = "نام_کاربری_اکانت_دوم_تو" 
     url = f"https://api.github.com/repos/{repo_owner}/killpv2sub/contents/sub_link.txt"
     
     headers = {
@@ -58,13 +59,13 @@ def push_to_sub_repo(runner_ip):
     sha = res.json().get("sha") if res.status_code == 200 else None
     
     content_b64 = base64.b64encode(sub_content.encode('utf-8')).decode('utf-8')
-    payload = {"message": "🔄 Update configs with raw runner IP", "content": content_b64}
+    payload = {"message": "🔄 Update configs with live Ngrok Tunnel Engine", "content": content_b64}
     if sha:
         payload["sha"] = sha
         
     final_res = requests.put(url, headers=headers, json=payload)
     if final_res.status_code in [200, 201]:
-        print("🚀 Sub-link successfully updated in killpv2sub repository!")
+        print("🚀 Sub-link successfully updated via Ngrok Domain!")
     else:
         print(f"❌ Failed to update sub-link: {final_res.text}")
 
@@ -91,14 +92,11 @@ def process_traffic_matrix():
     print("🎯 Core Data Matrix Monitor Activated (Version 2.0)...")
     db_data = load_database()
     
-    # گرفتن آی‌پی رانر از فایلی که اکشن ساخته
-    runner_ip = "127.0.0.1"
-    if os.path.exists("active_runner_ip.txt"):
-        with open("active_runner_ip.txt", "r") as f:
-            runner_ip = f.read().strip()
+    # دامین ثابت ان‌گروک شما
+    ngrok_domain = "Tightrope-excavate-sector.ngrok-free.dev"
             
-    # آپلود اولیه لینک با آی‌پی جدید رانر
-    push_to_sub_repo(runner_ip)
+    # آپلود اولیه لینک با دامین ثابت ان‌گروک شما
+    push_to_sub_repo(ngrok_domain)
     
     for cycle in range(1, 300): 
         print(f"🔄 Syncing Operational Metrics... Cycle ({cycle})")
@@ -108,7 +106,7 @@ def process_traffic_matrix():
         for username, user_info in db_data["users"].items():
             if username in xray_stats:
                 user_info["xray_usage"]["down_bytes"] += xray_stats[username]["down"]
-                user_info["xray_usage"]["up_bytes"] += xray_stats[username]["up"]
+                user_info["xray_usage"]["up_bytes"] += xray_stats[username]["up_bytes"]
                 
             if username in singbox_stats:
                 user_info["singbox_usage"]["down_bytes"] += singbox_stats[username]["down"]
