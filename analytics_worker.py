@@ -46,8 +46,8 @@ def push_to_sub_repo(ngrok_domain):
     hy2_config = f"hysteria2://killpv2_secret_pass@{ngrok_domain}:443?insecure=1&sni={ngrok_domain}&alpn=h3#killpv2_SingBox_Ngrok"
     sub_content = f"{vless_config}\n{hy2_config}"
 
-    # ⚠️ نام کاربری اکانت دوم گیت‌هابت رو به جای عبارت زیر بنویس
-    repo_owner = "نام_کاربری_اکانت_دوم_تو" 
+    # 🎯 تنظیم نام کاربری اکانت دوم شما به صورت خودکار
+    repo_owner = "ABOL6666666" 
     url = f"https://api.github.com/repos/{repo_owner}/killpv2sub/contents/sub_link.txt"
     
     headers = {
@@ -106,7 +106,7 @@ def process_traffic_matrix():
         for username, user_info in db_data["users"].items():
             if username in xray_stats:
                 user_info["xray_usage"]["down_bytes"] += xray_stats[username]["down"]
-                user_info["xray_usage"]["up_bytes"] += xray_stats[username]["up_bytes"]
+                user_info["xray_usage"]["up_bytes"] += xray_stats[username]["up"]
                 
             if username in singbox_stats:
                 user_info["singbox_usage"]["down_bytes"] += singbox_stats[username]["down"]
