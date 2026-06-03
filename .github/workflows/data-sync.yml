@@ -49,20 +49,14 @@ jobs:
         sudo mv sing-box-*-linux-amd64/sing-box /usr/local/bin/
         sudo chmod +x /usr/local/bin/sing-box
         
-        # ۳. نصب ابزار Ngrok در رانر
-        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.co.id/ngrok.asc >/dev/null
-        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.co.id/ngrok.list
-        sudo apt-get update && sudo apt-get install ngrok
+        # ۳. نصب استاندارد و بدون ارور Ngrok در رانر اوبونتو
+        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+        sudo apt-get update && sudo apt-get install -y ngrok
         
         sudo mkdir -p /usr/local/etc/xray
         sudo chmod -R 777 /usr/local/etc/xray
 
-    - name: Launch Operational Engines (Xray & Sing-Box Parallel)
-      run: |
-        echo "🚀 Starting Dual-Core Hybrid Network..."
-        nohup xray run -c xray_config.json > xray_runtime.log 2>&1 &
-        nohup sing-box run -c singbox_config.json > singbox_runtime.log 2>&1 &
-        sleep 3
 
     - name: Activate Ngrok Custom Domain Tunnel Architecture
       env:
