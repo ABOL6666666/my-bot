@@ -30,39 +30,32 @@ jobs:
         net.ipv4.tcp_congestion_control = bbr
         net.core.rmem_max = 67108864
         net.core.wmem_max = 67108864
-        net.ipv4.tcp_rmem = 4096 87380 67108864
-        net.ipv4.tcp_wmem = 4096 65536 67108864
-        net.core.netdev_max_backlog = 10000
-        net.ipv4.tcp_max_syn_backlog = 10000
-        net.ipv4.tcp_tw_reuse = 1
-        net.ipv4.tcp_fin_timeout = 15
-        net.ipv4.tcp_keepalive_time = 600
         EOF
         sudo sysctl -p
 
-    - name: Download & Install Dual Cores (Xray & Sing-Box)
+    - name: Download & Install Dual Cores & Ngrok
       run: |
         sudo apt-get update && sudo apt-get install -y unzip wget curl
         
+        # ۱. دانلود هسته Xray
         XRAY_DL=$(echo "aHR0cHM6Ly9naXRodWIuY29tL1hUTFMvWHJheS1jb3JlL3JlbGVhc2VzL2xhdGVzdC9kb3dubG9hZC9YcmF5LWxpbnV4LTY0LnppcA==" | base64 -d)
         wget $XRAY_DL -O xray.zip
         sudo unzip -o xray.zip -d /usr/local/bin/ xray
         sudo chmod +x /usr/local/bin/xray
         
+        # ۲. دانلود هسته Sing-Box
         curl -Lo sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v1.11.0-alpha.5/sing-box-1.11.0-alpha.5-linux-amd64.tar.gz
         tar -xzf sing-box.tar.gz
         sudo mv sing-box-*-linux-amd64/sing-box /usr/local/bin/
         sudo chmod +x /usr/local/bin/sing-box
         
+        # ۳. نصب ابزار Ngrok در رانر
+        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.co.id/ngrok.asc >/dev/null
+        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.co.id/ngrok.list
+        sudo apt-get update && sudo apt-get install ngrok
+        
         sudo mkdir -p /usr/local/etc/xray
         sudo chmod -R 777 /usr/local/etc/xray
-
-    - name: Resolve Runner Public IP Infrastructure
-      run: |
-        RUNNER_IP=$(curl -s https://api.ipify.org)
-        echo "🎯 GitHub Actions Runner Public IP: $RUNNER_IP"
-        echo "$RUNNER_IP" > active_runner_ip.txt
-        echo "IP_RESOLVED=$RUNNER_IP" >> $GITHUB_ENV
 
     - name: Launch Operational Engines (Xray & Sing-Box Parallel)
       run: |
@@ -70,7 +63,19 @@ jobs:
         nohup xray run -c xray_config.json > xray_runtime.log 2>&1 &
         nohup sing-box run -c singbox_config.json > singbox_runtime.log 2>&1 &
         sleep 3
-        ps aux | grep -E 'xray|sing-box'
+
+    - name: Activate Ngrok Custom Domain Tunnel Architecture
+      env:
+        NGROK_AUTHTOKEN: ${{ secrets.NGROOK_TOKEN }}
+      run: |
+        # ست کردن توکن ان‌گروک
+        ngrok config add-authtoken $NGROK_AUTHTOKEN
+        
+        # فوروارد کردن همزمان پورت‌ها روی دامین اختصاصی شما (پورت لود بالانس داخلی)
+        # پورت ۸۰۸۵ ایکس‌ری رو روی دامین فری شما تانل می‌کنه
+        nohup ngrok http 8085 --url=Tightrope-excavate-sector.ngrok-free.dev > ngrok.log 2>&1 &
+        sleep 5
+        cat ngrok.log
 
     - name: Launch Operational Backend Analytics Worker
       env:
