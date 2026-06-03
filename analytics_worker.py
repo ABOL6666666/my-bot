@@ -46,7 +46,7 @@ def push_to_sub_repo(runner_ip):
     sub_content = f"{vless_config}\n{hy2_config}"
 
     # ⚠️ نام کاربری اکانت دوم گیت‌هابت رو به جای عبارت زیر بنویس
-    repo_owner = "یوزرنیم_اکانت_دوم_تو" 
+    repo_owner = "ABOL6666666" 
     url = f"https://api.github.com/repos/{repo_owner}/killpv2sub/contents/sub_link.txt"
     
     headers = {
