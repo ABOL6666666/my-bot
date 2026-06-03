@@ -1,20 +1,20 @@
 {
   "system_status": "active",
-  "last_update": "2026-06-03 14:34:38",
+  "last_update": "2026-06-03 15:25:06",
   "users": {
     "killpv2_user1": {
       "uuid": "d3b07384-d113-4956-a5cc-9c32267e1a3b",
       "password": "killpv2_secret_pass",
       "total_allowed_bytes": 53687091200,
       "xray_usage": {
-        "down_bytes": 1614807040,
-        "up_bytes": 322961408
+        "down_bytes": 3182428160,
+        "up_bytes": 636485632
       },
       "singbox_usage": {
-        "down_bytes": 2583691264,
-        "up_bytes": 645922816
+        "down_bytes": 5091885056,
+        "up_bytes": 1272971264
       },
-      "total_calculated_bytes": 5167382528,
+      "total_calculated_bytes": 10183770112,
       "status": "active"
     }
   }
