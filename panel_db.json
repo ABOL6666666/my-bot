@@ -1,6 +1,6 @@
 {
   "system_status": "active",
-  "last_update": "2026-06-06 14:18:42",
+  "last_update": "2026-06-06 15:09:08",
   "users": {
     "killpv2_user1": {
       "uuid": "d3b07384-d113-4956-a5cc-9c32267e1a3b",
@@ -11,10 +11,10 @@
         "up_bytes": 950009856
       },
       "singbox_usage": {
-        "down_bytes": 215780163584,
-        "up_bytes": 53945040896
+        "down_bytes": 218288357376,
+        "up_bytes": 54572089344
       },
-      "total_calculated_bytes": 275425263616,
+      "total_calculated_bytes": 278560505856,
       "status": "expired"
     }
   }
